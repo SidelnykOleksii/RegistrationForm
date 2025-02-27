@@ -6,7 +6,9 @@ document
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    const gender = document.querySelector('input[name="gender"]:checked')?.value;
+    const gender = document.querySelector(
+      'input[name="gender"]:checked'
+    )?.value;
 
     if (!validatePassword(password)) return; // Виклик функції перевірки
     if (!gender) {
@@ -81,3 +83,47 @@ document.getElementById("toggleUsers").addEventListener("click", async () => {
     }
   }
 });
+
+async function fetchUsers() {
+  const response = await fetch("http://localhost:3000/users");
+  return response.json();
+}
+
+async function deleteUser(email) {
+  const response = await fetch(`http://localhost:3000/users/${email}`, {
+    method: "DELETE",
+  });
+  return response.json();
+}
+
+async function renderUserTable() {
+  const users = await fetchUsers();
+  const tableBody = document.querySelector("#userTable tbody");
+  tableBody.innerHTML = ""; // Очищуємо таблицю перед рендером
+
+  users.forEach((user) => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+    <td>${user.name}</td>
+    <td>${user.email}</td>
+    <td>${user.gender || "N/A"}</td>
+    <td class="action-icons">
+    <button class="update-icon">✏️</button>
+    <button class="delete-icon" onclick="handleDelete('${user.email}')">❌</button>
+    </td>
+    `;
+
+    tableBody.appendChild(row);
+  });
+}
+
+async function handleDelete(email) {
+  if (confirm("Ви точно хочете видалити цього користувача?")) {
+    await deleteUser(email);
+    renderUserTable(); // Перерендерити таблицю
+  }
+}
+
+// Викликаємо рендер при завантаженні сторінки
+document.addEventListener("DOMContentLoaded", renderUserTable);

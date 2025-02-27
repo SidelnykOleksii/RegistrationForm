@@ -110,3 +110,52 @@ input:focus {
 .dropdown-content li:hover {
     background-color: #f0f0f0;
 }
+
+/* Таблиця юзерів */
+.table-container {
+    position: absolute;
+    bottom: 20px;
+    width: 100%; /* Таблиця на всю ширину */
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+th, tr {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: center;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+td {
+    font-size: 15px;
+}
+
+.action-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-icons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.delete-icon {
+    color: red;
+}
+
+.update-icon {
+    color: blue;
+}
