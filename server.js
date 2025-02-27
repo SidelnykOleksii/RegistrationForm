@@ -52,22 +52,34 @@ app.post("/register", (req, res) => {
           return res.status(500).json({ error: err.message });
         }
         console.log(`Користувач доданий! ID: ${this.lastID}`);
-        res
-          .status(201)
-          .json({
-            message: "Користувач успішно зареєстрований!",
-            id: this.lastID,
-          });
+        res.status(201).json({
+          message: "Користувач успішно зареєстрований!",
+          id: this.lastID,
+        });
       }
     );
   });
 });
 
-app.get('/users', (req, res) => {
-    db.all(`SELECT name, email FROM users`, [], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    })
-})
+app.get("/users", (req, res) => {
+  db.all(`SELECT name, email, gender FROM users`, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+app.delete("/users/:email", (req, res) => {
+  const email = req.params.email;
+
+  db.run(`DELETE FROM users WHERE email = ?`, [email], function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Користувача не знайдено" });
+    }
+    res.json({ message: "Користувач успішно видалений" });
+  });
+});
 
 app.listen(3000, () => console.log("Server running on port 3000"));
