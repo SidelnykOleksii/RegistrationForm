@@ -89,13 +89,6 @@ async function fetchUsers() {
   return response.json();
 }
 
-async function deleteUser(email) {
-  const response = await fetch(`http://localhost:3000/users/${email}`, {
-    method: "DELETE",
-  });
-  return response.json();
-}
-
 async function renderUserTable() {
   const users = await fetchUsers();
   const tableBody = document.querySelector("#userTable tbody");
@@ -110,7 +103,7 @@ async function renderUserTable() {
     <td>${user.gender || "N/A"}</td>
     <td class="action-icons">
     <button class="update-icon">✏️</button>
-    <button class="delete-icon" onclick="handleDelete('${user.email}')">❌</button>
+    <button class="delete-icon" data-email="${user.email}">❌</button>
     </td>
     `;
 
@@ -118,12 +111,53 @@ async function renderUserTable() {
   });
 }
 
-async function handleDelete(email) {
-  if (confirm("Ви точно хочете видалити цього користувача?")) {
-    await deleteUser(email);
-    renderUserTable(); // Перерендерити таблицю
-  }
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("deleteModal");
+  const confirmDeleteBtn = document.getElementById("confirmDelete");
+  const cancelDeleteBtn = document.getElementById("cancelDelete");
 
-// Викликаємо рендер при завантаженні сторінки
+  let userEmailToDelete = null;
+
+  function showDeleteModal(email) {
+    userEmailToDelete = email;
+    modal.style.display = "flex";
+  }
+
+  function hideDeleteModal() {
+    modal.style.display = "none";
+    userEmailToDelete = null;
+  }
+
+  confirmDeleteBtn.addEventListener("click", async () => {
+    if (userEmailToDelete) {
+      await deleteUser(userEmailToDelete);
+    }
+    hideDeleteModal();
+  });
+
+  cancelDeleteBtn.addEventListener("click", hideDeleteModal);
+
+  async function deleteUser(email) {
+    const response = await fetch(`http://localhost:3000/users/${email}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      alert("Користувача успішно видалено");
+      fetchUsers();
+    } else {
+      alert("Помилка при видаленні користувача");
+    }
+  }
+
+  // Додаємо обробник подій на кнопку видалення (делегування подій)
+  document.body.addEventListener("click", (event) => {
+    if (event.target.classList.contains("delete-icon")) {
+      const email = event.target.getAttribute("data-email");
+      showDeleteModal(email);
+    }
+  });
+});
+
+// Calling render when the page loads
 document.addEventListener("DOMContentLoaded", renderUserTable);
