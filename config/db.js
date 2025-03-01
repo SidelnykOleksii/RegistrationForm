@@ -17,13 +17,4 @@ db.run(
       )`
   );
 
-// Перевірка що після запуску сервера є конект до БД і БД щось повертає
-//   db.all("SELECT * FROM users", [], (err, rows) => {
-//     if (err) {
-//       console.error("Error fetching users:", err.message); // Лог помилки
-//       return;
-//     }
-//     console.log("Fetched users:", rows); // Лог отриманих користувачів
-//   });
-
   module.exports = db;
