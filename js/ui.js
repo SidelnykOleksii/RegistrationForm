@@ -1,38 +1,37 @@
-import {fetchUsers} from "./api.js";
+import { fetchUsers } from "./api.js";
 
 export async function renderUserTable() {
-    const users = await fetchUsers();
-    const tableBody = document.querySelector("#userTable tbody");
-    tableBody.innerHTML = ""; // Clear table before render
-  
-    users.forEach((user) => {
-      const row = document.createElement("tr");
-  
-      row.innerHTML = `
-      <td>${user.name}</td>
-      <td>${user.email}</td>
-      <td>${user.gender || "N/A"}</td>
-      <td class="action-icons">
-      <button class="update-icon">✏️</button>
-      <button class="delete-icon" data-email="${user.email}">❌</button>
-      </td>
-      `;
-  
-      tableBody.appendChild(row);
-    });
-  }
+  const users = await fetchUsers();
+  const tableBody = document.querySelector("#userTable tbody");
+  tableBody.innerHTML = ""; // Clear table before rendering
 
-export function showMessage(message, type = "info") {
-    const messageBox = document.getElementById("messageBox");
+  users.forEach((user) => {
+    const userRow = document.createElement("tr");
 
-    messageBox.textContent = message;
-    messageBox.className = `message ${type}`;
-    messageBox.style.display = "block";
+    userRow.innerHTML = `
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.gender || "N/A"}</td>
+            <td class="action-icons">
+                <button class="update-icon">✏️</button>
+                <button class="delete-icon" data-email="${
+                  user.email
+                }">❌</button>
+            </td>
+        `;
 
-    console.log("Повідомлення з'явилося");
+    tableBody.appendChild(userRow);
+  });
+}
 
-    setTimeout(() => {
-        console.log("Приховуємо повідомлення");
-        messageBox.style.display = "none";
-    }, 3000);
+export function showMessage(messageText, messageType = "info") {
+  const messageElement = document.getElementById("messageBox");
+
+  messageElement.textContent = messageText;
+  messageElement.className = `message ${messageType}`;
+  messageElement.style.display = "block";
+
+  setTimeout(() => {
+    messageElement.style.display = "none";
+  }, 3000);
 }
