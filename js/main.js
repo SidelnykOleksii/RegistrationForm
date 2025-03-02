@@ -2,16 +2,13 @@ import { fetchUsers } from "./api.js";
 import { renderUserTable } from "./ui.js";
 import "./events.js";
 
-async function init() {
-    console.log("🚀Initializinf app...");
-
+async function initializeApp() {
     try {
-        const users = await fetchUsers();
-        console.log("✅ Users fetched:", users);
-        renderUserTable();
+        const userList = await fetchUsers();
+        renderUserTable(userList);
     } catch (error) {
-        console.error("❌ Error loading users:", error);
+        console.error("Error loading users:", error);
     }
 }
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", initializeApp);

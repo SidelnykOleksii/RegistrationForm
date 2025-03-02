@@ -5,52 +5,48 @@ import { validatePassword } from "./validation.js";
 // Adding an event for the registration form
 document
   .getElementById("registerForm")
-  .addEventListener("submit", async function (event) {
-    event.preventDefault(); // Prevent page reloads
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-    const password = document.getElementById("password").value;
-    const gender =  document.querySelector('input[name="gender"]:checked')?.value || "N/A";
-    
-    if (!validatePassword(password)) return;
-    
-    if (!gender) {
-      alert("Please select a gender.");
-      return;
-    }
+    const enteredPassword = document.getElementById("password").value;
+    const selectedGender = document.querySelector('input[name="gender"]:checked')?.value ?? "N/A";
+
+    if (!validatePassword(enteredPassword)) return;
 
     const userData = {
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      password,
-      gender,
+      name: document.getElementById("name").value.toLowerCase(),
+      email: document.getElementById("email").value.toLowerCase(),
+      password: enteredPassword,
+      gender: selectedGender,
     };
+
     await registerUser(userData);
     await renderUserTable();
   });
 
 // Event for delete user
 document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("deleteModal");
+  const deleteModal = document.getElementById("deleteModal");
   const confirmDeleteBtn = document.getElementById("confirmDelete");
   const cancelDeleteBtn = document.getElementById("cancelDelete");
 
   let userEmailToDelete = null;
 
-  function showDeleteModal(email) {
+  const showDeleteModal = (email) => {
     userEmailToDelete = email;
-    modal.style.display = "flex";
-  }
+    deleteModal.style.display = "flex";
+  };
 
-  function hideDeleteModal() {
-    modal.style.display = "none";
+  const hideDeleteModal = () => {
+    deleteModal.style.display = "none";
     userEmailToDelete = null;
-  }
+  };
 
   confirmDeleteBtn.addEventListener("click", async () => {
     if (userEmailToDelete) {
       await deleteUser(userEmailToDelete);
+      hideDeleteModal();
     }
-    hideDeleteModal();
   });
 
   cancelDeleteBtn.addEventListener("click", hideDeleteModal);
